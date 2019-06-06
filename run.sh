@@ -1,9 +1,13 @@
 #!/bin/bash
 input_file=$1
-BERT_BASE_DIR=$2
-layers=$3
-align_strategy=$4
-cur_dir=$(realpath "$0" | sed 's|\(.*\)/.*|\1|')   # get absolute path
+output_file=$2
+BERT_BASE_DIR=$3
+
+layers=-6
+align_strategy=mean
+
+cur_dir=$PWD
+# cur_dir=$(realpath "$0" | sed 's|\(.*\)/.*|\1|')
   
 python $cur_dir/extract_features.py \
     --input_file=$input_file \
@@ -19,8 +23,4 @@ python $cur_dir/extract_features.py \
 python $cur_dir/get_aligned_bert_emb.py \
     --input_file $input_file.json \
     --mode $align_strategy \
-    --output_file "$input_file"_"$layers"_"$align_strategy" \
-
-
-
-
+    --output_file $output_file \
