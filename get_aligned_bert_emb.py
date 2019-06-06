@@ -7,23 +7,19 @@ import argparse
 import os 
 import codecs
 
-
 def parse_args(args=None):
     parser = argparse.ArgumentParser(
-        description="get token level embedding from BERT, just using the first sub_word of each token"
+        description="get token level embedding from BERT"
     )
     # input files
     parser.add_argument("--input_file", "-i", type=str, 
                         help="the output json file of BERT, ")
-    # model and configuration
     parser.add_argument("--mode", "-m", type=str, default="first", 
                         help="Using the first mode or arverage all sub_word, [first | mean | max]")
-
     parser.add_argument("--output_file", "-r", type=str,
                         help="final embedding file , each token embedding is seperated by delimiter")
-   parser.add_argument("--delimiter", "-d", type=str, default="|||",
+    parser.add_argument("--delimiter", "-d", type=str, default="|||",
                        help="delimiter of each token embedding in the output file")
-
 
     return parser.parse_args(args)
 
@@ -36,7 +32,6 @@ def reduce_mean_list(ls):
         for index, value in enumerate(item):
             ls[0][index] += value
     return [value / len(ls) for value in ls[0]]
-
 
 def reduce_max_list(ls):
     if len(ls) == 1:
@@ -58,13 +53,15 @@ def main(args):
             orig_to_tok_map = [id_ for id_ in datas["orig_to_tok_map"] if id_ != 0] + [num_token - 1]
             embeddings = []
             word_pieces_embs = []
+            
             for token_id, feature in enumerate(datas["features"]):
-                
                 if args.mode == "first" and token_id in orig_to_tok_map[:-1]:
                     embeddings.append(" ".join([str(value) for value in feature["layers"][0]["values"]]))
+                    
                 if args.mode == "mean" and token_id in orig_to_tok_map[1:]: # merage before word pieces
                     embeddings.append(" ".join([str(value) for value in reduce_mean_list(word_pieces_embs)]))
                     word_pieces_embs = []  # clean word pieces    
+                    
                 if args.mode == "max" and token_id in orig_to_tok_map[1:]:
                     embeddings.append(" ".join([str(value) for value in reduce_max_list(word_pieces_embs)]))
                     word_pieces_embs = []  
