@@ -24,3 +24,6 @@ python $cur_dir/get_aligned_bert_emb.py \
     --input_file $input_file.json \
     --mode $align_strategy \
     --output_file $output_file \
+
+# rm the derivative file
+rm -f $input_file.json
