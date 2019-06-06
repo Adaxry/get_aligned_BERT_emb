@@ -20,9 +20,9 @@ We investigate 3 align strategies (`first`, `mean` and `max`) to maintain an ori
 ## How to use this repo?
 
 ```shell
-sh run.sh input_file BERT_BASE_DIR
+sh run.sh input_file outout_file BERT_BASE_DIR
 # For example:
-sh run.sh your_data path/to/bert/uncased_L-12_H-768_A-12 outout_file
+sh run.sh you_data you_data.bert path/to/bert/uncased_L-12_H-768_A-12 
 ```
 You can modify `layers` and `align_strategies` in the `run.sh`.
 
